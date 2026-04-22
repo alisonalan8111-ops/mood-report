@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>情绪日报 - 超体01号</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: #1a1a2e;
+    color: #e0e0e0;
+    min-height: 100vh;
+    padding: 20px;
+  }
+  .container { max-width: 600px; margin: 0 auto; }
+  .card {
+    background: #16213e;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  .header { text-align: center; margin-bottom: 24px; }
+  .header h1 { font-size: 22px; color: #a29bfe; margin-bottom: 4px; }
+  .header p { font-size: 13px; color: #666; }
+  .score-big {
+    font-size: 72px;
+    font-weight: 700;
+    color: #6c5ce7;
+    text-align: center;
+    line-height: 1;
+    margin: 16px 0;
+  }
+  .score-label { text-align: center; color: #888; font-size: 14px; }
+  .section-title {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 12px;
+    border-left: 3px solid #6c5ce7;
+    padding-left: 10px;
+  }
+  canvas { width: 100% !important; height: auto !important; }
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tag {
+    background: #2d2d5a;
+    color: #a29bfe;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+  }
+  .mini-chart { display: flex; align-items: flex-end; gap: 8px; height: 60px; }
+  .bar {
+    flex: 1;
+    background: linear-gradient(to top, #6c5ce7, #a29bfe);
+    border-radius: 4px 4px 0 0;
+    text-align: center;
+    font-size: 11px;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    transition: transform 0.2s;
+  }
+  .bar:hover { transform: scaleY(1.05); }
+  .bar span { padding: 4px; }
+  .summary-text {
+    font-size: 14px;
+    line-height: 1.8;
+    color: #ccc;
+  }
+  .highlight { color: #fd79a8; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="card">
+    <div class="header">
+      <h1>🌙 本周情绪总览</h1>
+      <p>4月14日 - 4月20日</p>
+    </div>
+    <div class="score-big">5.6</div>
+    <div class="score-label">平均情绪评分（满分10分）</div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">本周情绪走势图</div>
+    <canvas id="lineChart" height="180"></canvas>
+  </div>
+
+  <div class="card">
+    <div class="section-title">每日评分</div>
+    <div class="mini-chart">
+      <div class="bar" style="height:60%"><span>6</span></div>
+      <div class="bar" style="height:30%"><span>3</span></div>
+      <div class="bar" style="height:50%"><span>5</span></div>
+      <div class="bar" style="height:40%"><span>4</span></div>
+      <div class="bar" style="height:60%"><span>6</span></div>
+      <div class="bar" style="height:80%"><span>8</span></div>
+      <div class="bar" style="height:70%"><span>7</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">关键词</div>
+    <div class="tags">
+      <span class="tag">累 ×5</span>
+      <span class="tag">压力 ×3</span>
+      <span class="tag">还行 ×2</span>
+      <span class="tag">开心 ×2</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">高低点</div>
+    <div class="summary-text">
+      📍 低谷：周二 14:30 — 评分 3/10<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;触发：工作堆积<br><br>
+      📍 高点：周六 20:00 — 评分 8/10<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;触发：朋友聚会
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">建议</div>
+    <div class="summary-text">
+      本周压力主要来自工作量，休息质量不够。<br><br>
+      💡 建议：减少晚间信息摄入，提前<span class="highlight">30分钟</span>入睡<br>
+      💡 周六的情绪高点来自社交，这可能是你本周最重要的充电方式
+    </div>
+  </div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+new Chart(document.getElementById('lineChart'), {
+  type: 'line',
+  data: {
+    labels: ['周一','周二','周三','周四','周五','周六','周日'],
+    datasets: [{
+      label: '情绪评分',
+      data: [6, 3, 5, 4, 6, 8, 7],
+      borderColor: '#a29bfe',
+      backgroundColor: 'rgba(162,155,254,0.15)',
+      borderWidth: 2.5,
+      pointBackgroundColor: '#6c5ce7',
+      pointRadius: 5,
+      pointHoverRadius: 7,
+      fill: true,
+      tension: 0.4
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#16213e',
+        titleColor: '#a29bfe',
+        bodyColor: '#e0e0e0',
+        borderColor: '#6c5ce7',
+        borderWidth: 1,
+        callbacks: {
+          label: ctx => '评分：' + ctx.raw + '/10'
+        }
+      }
+    },
+    scales: {
+      y: {
+        min: 0, max: 10,
+        grid: { color: 'rgba(255,255,255,0.06)' },
+        ticks: { color: '#666', stepSize: 2 }
+      },
+      x: {
+        grid: { display: false },
+        ticks: { color: '#888' }
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>
